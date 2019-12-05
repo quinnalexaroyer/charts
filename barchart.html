@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
+    <script src = "../d3/d3.min.js"></script>
+</head>
+<body>
+<h1>BarChart</h1>
+<h2>Basics</h2>
+<p>In order to insert a bar chart into a website, it is necessary to load the <span class="incode">charts.js</span> file, load the D3 library, and create an SVG element in which to draw the chart. To create the SVG element, insert the following text in the HTML document:</p>
+<p class="code">&lt;svg id=&quot;chart&quot; height=&quot;500&quot; width=&quot;500&quot;&gt;</p>
+<p>The height and width do not have to be 500; they can be whatever size you wish. The ID attribute above is <span class="incode">chart</span>. You can replace this with any ID you wish, but you must include an ID so you can tell the program which element to insert the chart.</p>
+<p>Insert the following code in the document to load the <span class="incode">charts.js</span> file:</p>
+<p class="code">&lt;script src=&quot;/path/to/charts.js&quot;&gt;&lt;/script&gt;</p>
+<p>If you place the <span class="incode">charts.js</span> in the same directory as your HTML file, you can simply put <span class="incode">charts.js</span> in the <span class="incode">src</span> attribute as follows:</p>
+<p class="code">&lt;script src=&quot;charts.js&quot;&gt;&lt;/script&gt;</p>
+<p>The last thing you need to do is create a new <span class="incode">BarChart</span> object. The <span class="incode">BarChart</span> object requires two arguments: the first being the SVG element to insert the chart, and the second being a JavaScript object. The following is an example of the code to create the <span class="incode">BarChart</span> object:</p>
+<figure class="rightFigure">
+    <svg id="fig1svg" height="200" width="250"></svg>
+    <figcaption>Figure 1</figcaption>
+</figure>
+<p class="code">
+var info = {x:[1,2,3,4,5,6], 
+  y:[1,4,9,16,25,36]
+};
+var element = d3.select("#chart");
+var c = new BarChart(element, info);
+</p>
+<p>The result of this code is shown in Figure 1 (on the right).The variable <span class="incode">info</span> is the JavaScript object. It contains the data and the list of options. The various options will be explained further in this document. The variable <span class="incode">element</span> selects the SVG object in the HTML document. If you used an ID other than <span class="incode">chart</span> for the SVG element, be sure to use that instead as the argument for <span class="incode">d3.select</span>, and be sure to include the hashtag (<span class="incode">&#35;</span>) in front.</p>
+<h2>Entering Data</h2>
+<p>The data and options are included within a JavaScript object. A JavaScript object is enclosed in curly braces <span class="incode">{}</span> and contains a bunch of pairs of an attribute with a value, separated by commas. In each pair, the attribute and value are separated by a colon (<span class="incode">:</span>) with the attribute coming before the colon and the value coming after it. The data for your independent variable, which is displayed on the horizontal axis, is the value for the <span class="incode">x</span> attribute, and the data for the dependent variable, which is displayed on the vertical axis, is the value for the <span class="incode">y</span> attribute.</p>
+<figure class="rightFigure">
+    <table>
+        <tr><td><strong>Year</strong></td><td><strong>Population</strong></td></tr>
+        <tr><td>1900</td><td>3500</td></tr>
+        <tr><td>1925</td><td>22000</td></tr>
+        <tr><td>1950</td><td>38500</td></tr>
+        <tr><td>1975</td><td>186000</td></tr>
+        <tr><td>2000</td><td>324000</td></tr>
+        <tr><td>2025</td><td>446250</td></tr>
+    </table>
+    <figcaption>Figure 2</figcaption>
+</figure>
+<p>Suppose you want a bar chart showing the data in figure 2 (on the left). Then the value for <span class="incode">x</span> will be <span class="incode">[1900, 1925, 1950, 1975, 2000, 2025]</span> and the value for <span class="incode">y</span> would be <span class="incode">[3500, 22000, 38500, 186000, 324000, 446250]</span>. Thus, the code to produce a chart with that data would be the following:</p>
+<p class="code">
+var info = {x:[1900, 1925, 1950, 1975, 2000, 2025],
+    y:[3500, 22000, 38500, 186000, 324000, 446250]
+};
+var element = d3.select("#chart");
+var c = new BarChart(element, info);
+</p>
+<h3>Arrays and Functions</h3>
+<p>In the above examples, the <span class="incode">x</span> and <span class="incode">y</span> values are ented as <em>arrays</em>: a list of comma separated values enclosed in square brackets <span class="incode">[]</span>. Data can also be entered using a <em>function</em>. A function is a block of code that takes zero or more arguments and optionally returns a value. A function in JavaScript starts with the keyword <span class="incode">function</span>, followed by comma separated arguments enclosed in parenthesis <span class="incode">()</span>. Next comes the body of the function, enclosed in curly braces <span class="incode">{}</span>. The keyword <span class="incode">return</span> is used before the expression to return (if the function returns a value). The chart in figure 1 could have also been rendered with the following code:</p>
+<p class="code">
+var info = {x:function(i) {return i;}, 
+  y:function(x) {return x**2;},
+  range:[1,6,1]
+};
+var element = d3.select("#chart");
+var c = new BarChart(element, info);
+</p>
+<p>Note that in the above code, the <span class="incode">info</span> object contains the attribute <span class="incode">range</span>. This is required when the value for <span class="incode">x</span> is a function. The <span class="incode">range</span> attribute indicates on which values of <span class="incode">i</span> the function for <span class="incode">x</span> will be called. Here, <span class="incode">range</span> is set to <span class="incode">[1,6,1]</span>, so the funtion will be called for the values 1, 2, 3, 4, 5, and 6. The first number in the <span class="incode">range</span> attribute indicates the value with which to begin. The second number indicates the value with which to end. The third number is how many numbers to skip. Instead of <span class="incode">[1900, 1925, 1950, 1975, 2000, 2025]</span>, the <span class="incode">x</span> value for the data in figure 2 could have been entered as a function as <span class="incode">function(i) {return i;}</span> with the <span class="incode">range</span> attribute set to <span class="incode">[1900,2025,25]</span>. This means to start at 1900, and skip by 25 until it gets to 2025.</p>
+<p>The values for <span class="incode">x</span> and <span class="incode">y</span> do not have to be entered the same way. One could be entered as an array and the other a function.</p>
+<h2>Options</h2>
+<p>Although supplying the <span class="incode">info</span> object only the <span class="incode">x</span> and <span class="incode">y</span> values is enough to produce a graph, the result is not great. Various options can be used to make the chart look better.</p>
+<div class="rightFigure">
+    <figure>
+        <svg id="fig3svg" height="200" width="250"></svg>
+        <figcaption>Figure 3</figcaption>
+    </figure>
+    <figure>
+        <svg id="fig4svg" height="200" width="250"></svg>
+        <figcaption>Figure 4</figcaption>
+    </figure>
+</div>
+<h3>Axis Padding</h3>
+<p>The options <span class="incode">xAxisPadding</span> and <span class="incode">yAxisPadding</span> indicate how much space to give to draw the increments at the axes. In figure 1, no space is given, so the axis increments are drawn on the same space to draw the bars of the chart. The x increments at the bottom of the chart cannot even be seen (unless you select the text with the mouse) because the black text is drawn on top of the black bars. The following code produces the chart in figure 3:</p>
+<p class="code">
+var info = {x:[1,2,3,4,5,6], 
+  y:[1,4,9,16,25,36],
+  xAxisPadding:25,
+  yAxisPadding:25
+};
+var element = d3.select("#chart");
+var c = new BarChart(element, info);
+</p>
+<p>Here you can see the values 1 to 6 at the bottom of the chart because there is space to display the axis increments. There are also options <span class="incode">xEdgePadding</span> and <span class="incode">yEdgePadding</span> which indicate how much space to leave at the top and right of the chart, respectively. The code below includes values for <span class="incode">xEdgePadding</span> and <span class="incode">yEdgePadding</span> and the result is shown on figure 4.</p>
+<p class="code">
+var info = {x:[1,2,3,4,5,6], 
+  y:[1,4,9,16,25,36],
+  xAxisPadding:25,
+  yAxisPadding:25,
+  xEdgePadding:15,
+  yEdgePadding:15
+};
+var element = d3.select("#chart");
+var c = new BarChart(element, info);
+</p>
+<p>On figure 3, the last value (36) gets cut off because there is no space to print it, but the <span class="incode">xEdgePadding</span> option in figure 4 provides space for it.</p>
+<h3>Axis Increments</h3>
+<p>The attribute <span class="incode">yIncrement</span> indicates how much to skip for each increment on the y-axis. Note that there is no equivalent for the x-axis since it prints the value for each bar on the x-axis. The option <span class="incode">numberOfIncrements</span> indicates how many increments should be on the y-axis. Only one of these two options should be set for each chart. If both options are set, <span class="incode">yIncrement</span> will override <span class="incode">numberOfIncrements</span>. If neither option is set, the default is to draw ten increments.</p>
+<p>The code below draws the chart in figure 5:</p>
+<figure class="rightFigure">
+    <svg id="fig5svg" height="200" width="250"></svg>
+    <figcaption>Figure 5</figcaption>
+</figure>
+<p class="code">
+var info = {x:[1,2,3,4,5,6],
+  y:[1,4,9,16,25,36],
+  xAxisPadding:25,
+  yAxisPadding:25,
+  xEdgePadding:15,
+  yEdgePadding:15,
+  numberOfIncrements:6
+};
+var element = d3.select("#chart");
+var c = new BarChart(element, info);
+</p>
+<p class="clear">The code below draws the chart in figure 6:</p>
+<figure class="rightFigure">
+    <svg id="fig6svg" height="200" width="250"></svg>
+    <figcaption>Figure 6</figcaption>
+</figure>
+<p class="code">
+var info = {x:[1,2,3,4,5,6], 
+  y:[1,4,9,16,25,36],
+  xAxisPadding:25,
+  yAxisPadding:25,
+  xEdgePadding:15,
+  yEdgePadding:15,
+  yIncrement:4
+};
+var element = d3.select("#chart");
+var c = new BarChart(element, info);
+</p>
+<h3>Scale</h3>
+<p>By default, the program scales the chart so that the highest bar extends to the top of the chart, but this can be manually overridden with the <span class="incode">yScale</span> attribute. The scale is measured in units per pixel. So if you want the chart to go up to a value of 1000 and there are 250 pixels from the x-axis to the top of the chart, set <span class="incode">yScale</span> to <span class="incode">4</span>. The following code uses a <span class="incode">yScale</span> of <span class="incode">2</span> and the result is shown in figure 7:</p>
+<figure class="rightFigure">
+    <svg id="fig7svg" height="200" width="250"></svg>
+    <figcaption>Figure 7</figcaption>
+</figure>
+<p class="code">
+var info = {x:[1,2,3,4,5,6], 
+  y:[1,4,9,16,25,36],
+  xAxisPadding:25,
+  yAxisPadding:25,
+  xEdgePadding:15,
+  yEdgePadding:15,
+  yIncrement:10,
+  yScale:2
+};
+</p>
+<p>Figure 7 has a height of 200 pixels. Since it leaves 25 pixels for the x-axis and 15 pixels at the edge at the top, the chart consists of 160 pixels. Since <span class="incode">yScale</span> is <span class="incode">2</span>, this chart goes up to 80.</p>
+<h3>Bar width</h3>
+<p>The attribute <span class="incode">barWidth</span> determines how many pixels wide a bar is, and <span class="incode">barSpace</span> determines how many pixels are spaced between bars. If these options are not given, then by default the bars are 15 pixels wide and five pixels apart. The output of the code below is shown in figure 8.</p>
+<figure class="rightFigure">
+    <svg id="fig8svg" height="200" width="250"></svg>
+    <figcaption>Figure 8</figcaption>
+</figure>
+<p class="code">
+var info = {x:[1,2,3,4,5,6], 
+  y:[1,4,9,16,25,36],
+  xAxisPadding:25,
+  yAxisPadding:25,
+  xEdgePadding:15,
+  yEdgePadding:15,
+  barWidth:30,
+  barSpace:1
+};
+</p>
+<h3>Colors</h3>
+<p>The attribute <span class="incode">colors</span> takes an array as its value and each element in the array is a <em>string</em> (a sequence of characters/symbols enclosed in quotation marks). Colors are usually represented by a <em>hexadecimal</em> number. The hexadecimal system is based on the number 16, instead of the base ten number system we are used to. Since hexadecimal requires 16 digits, the letters A to F are used to represent the remaining six digits not present in the base ten number system. The the color's code starts with a pound symbol <span class="incode">&#35;</span> and is followed by six hexadecimal digits. Colors on a computer are generated by combining various quantities of red, green, and blue light. The six digits of the color code represent the red, green, and blue values, with the first two representing red, the middle two representing green, and the last two representing blue. For example, the code <span class="lavender incode">&quot;&#35;C060FF&quot;</span> represents a lavender color. The digits <span class="incode">C0</span> represent red, <span class="incode">60</span> represent green, and <span class="incode">FF</span> represent blue.</p>
+<p>Fortunately, JavaScript recognizes the names of a number of colors, so it is not necessary to know the code of a particular color. The result of the code below is shown in figure 9.</p>
+<div class="rightFigure">
+    <figure>
+        <svg id="fig9svg" height="200" width="250"></svg>
+        <figcaption>Figure 9</figcaption>
+    </figure>
+    <figure>
+        <svg id="fig10svg" height="200" width="250"></svg>
+        <figcaption>Figure 10</figcaption>
+    </figure>
+</div>
+<p class="code">
+var info = {x:[1,2,3,4,5,6], 
+  y:[1,4,9,16,25,36],
+  xAxisPadding:25,
+  yAxisPadding:25,
+  xEdgePadding:15,
+  yEdgePadding:15,
+  colors:[&quot;red&quot;, &quot;orange&quot;, &quot;green&quot;, &quot;blue&quot;]
+};
+</p>
+<p>If there are fewer colors in the <span class="incode">colors</span> attribute than there are bars in the chart, it cycles back to the beginning of the list of colors. You can put only one color in the list if you want all the bars to be the same color, but the value must still be an array, even if the array only has one value. So for example if you want all bars in the chart to be brown, you would include this declaration in the <span class="incode">info</span> object:</p>
+<p class="code">
+    colors:[&quot;brown&quot;]
+</p>
+<p>The square brackets <span class="incode">[]</span> above are required to make it an array. A chart like figure 9 except it includes the color declaration above is shown in figure 10.</p>
+</body>
+<script src="charts.js"></script>
+<script>
+    var info = {x:[1,2,3,4,5,6], 
+      y:[1,4,9,16,25,36]
+    };
+    var element = d3.select("#fig1svg");
+    var c = new BarChart(element, info);
+    info.xAxisPadding = 25;
+    info.yAxisPadding = 25;
+    element = d3.select("#fig3svg");
+    c = new BarChart(element, info);
+    info.xEdgePadding = 15;
+    info.yEdgePadding = 15;
+    element = d3.select("#fig4svg");
+    c = new BarChart(element, info);
+    info.numberOfIncrements = 6;
+    element = d3.select("#fig5svg");
+    c = new BarChart(element, info);
+    element = d3.select("#fig6svg");
+    var info2 = {x:[1,2,3,4,5,6],
+        y:[1,4,9,16,25,36],
+        xAxisPadding:25,
+        yAxisPadding:25,
+        xEdgePadding:15,
+        yEdgePadding:15,
+        yIncrement:4
+    };
+    c = new BarChart(element, info2);
+    info2.yIncrement = 10;
+    info2.yScale = 2;
+    element = d3.select("#fig7svg");
+    c = new BarChart(element, info2);
+    var info3 = {x:[1,2,3,4,5,6],
+        y:[1,4,9,16,25,36],
+        xAxisPadding:25,
+        yAxisPadding:25,
+        xEdgePadding:15,
+        yEdgePadding:15,
+        barWidth:30,
+        barSpace:1
+    };    
+    element = d3.select("#fig8svg");
+    c = new BarChart(element, info3);
+    element = d3.select("#fig9svg");
+    var info4 = {x:[1,2,3,4,5,6],
+        y:[1,4,9,16,25,36],
+        xAxisPadding:25,
+        yAxisPadding:25,
+        xEdgePadding:15,
+        yEdgePadding:15,
+        colors:["red","orange","green","blue"]
+    };
+    c = new BarChart(element, info4);
+    info4.colors = ["brown"];
+    element = d3.select("#fig10svg");
+    c = new BarChart(element, info4);
+</script>
+</html>

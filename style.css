@@ -1,0 +1,31 @@
+.leftFigure {
+    float:left;
+}
+
+.rightFigure {
+    float:right;
+}
+
+.incode {
+    font-family:monospace;
+}
+
+.code {
+    font-family:monospace;
+    padding: 0 36px;
+    white-space:pre;
+    clear:left;
+}
+
+figcaption {
+    font-size:0.75em;
+    text-align:center;
+}
+
+.clear {
+    clear:both;
+}
+
+.lavender {
+    color:#C060FF;
+}
